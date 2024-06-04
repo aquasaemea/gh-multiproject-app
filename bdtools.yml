@@ -1,0 +1,9 @@
+# Copyright (C) 2024 TomTom NV. All rights reserved.
+---
+project: dx-rc-sca-validation
+include_folders:
+  - conan
+  - gradle
+  - maven
+license_name: TomTom Internal License
+distribution_type: INTERNAL
