@@ -1,0 +1,43 @@
+name: GH MULTIPROJECT APP
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: 
+      - main
+      # comment10
+      
+env:
+   DOCKER_REPOSITORY: aquasaemea # name of Docker Hub ID
+   IMAGE_NAME: gh-conan-app
+   IMAGE_TAG: ${{ github.run_number }} # $GITHUB_RUN_NUMBER
+
+jobs:
+  CI-Code:
+    runs-on: ubuntu-22.04
+    steps:
+    
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Integrity Pipeline
+        uses: aquasecurity/pipeline-enforcer-action@main
+        with:
+          aqua-key: ${{ secrets.AQUA_KEY }}
+          aqua-secret: ${{ secrets.AQUA_SECRET }}
+          
+      - name: Aqua code scanning(SCA, Sensitive data, IaC, SAST, pipeline file, initial SBOM)
+        uses: docker://aquasec/aqua-scanner
+        with:
+          args: trivy --version
+          #args: trivy fs --scanners misconfig,vuln,secret --sast --reachability --gradle .
+          # --format template --template "@Report-Templates/aqua.tpl" -o .github/workflows/code_scan_results.html
+          # To customize which severities to scan for, add the following flag: --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+          # To enable SAST scanning, add: --sast
+          # To enable npm/dotnet non-lock file scanning, add: --package-json / --dotnet-proj
+        env:
+          AQUA_KEY: ${{ secrets.AQUA_KEY }}
+          AQUA_SECRET: ${{ secrets.AQUA_SECRET }}
+          GITHUB_TOKEN: ${{ github.token }}
+          TRIVY_RUN_AS_PLUGIN: 'aqua'
