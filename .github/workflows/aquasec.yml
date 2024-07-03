@@ -10,7 +10,7 @@ on:
       
 env:
    DOCKER_REPOSITORY: aquasaemea # name of Docker Hub ID
-   IMAGE_NAME: gh-conan-app
+   IMAGE_NAME: gh-multiproject-app
    IMAGE_TAG: ${{ github.run_number }} # $GITHUB_RUN_NUMBER
 
 jobs:
